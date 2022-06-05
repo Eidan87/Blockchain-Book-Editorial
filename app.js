@@ -57,7 +57,7 @@ console.log(cutreCoin.recorrerChain())
 //Revisar balances
 
 //function revisarBalances(){
-    console.log('El balance de Sergei es ', cutreCoin.getBalanceOfAddress('Sergei'))
+    console.log('El balance de Sergio es ', cutreCoin.getBalanceOfAddress('Sergei'))
     console.log('El balance de Pepe es ', cutreCoin.getBalanceOfAddress('Pepe'))
     console.log('El balance de Angela es ', cutreCoin.getBalanceOfAddress('Angela'))
     console.log('El balance de Editorial es ', cutreCoin.getBalanceOfAddress('Joan'))
