@@ -1,0 +1,55 @@
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">  </script>
+<link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet">
+<script src="//cdn.quilljs.com/1.0.0/quill.min.js"></script>
+
+
+<script>  
+      $(document).ready(function(){
+
+
+// Initialize QUill editor
+var quill = new Quill('#contenidoLibro', {
+  modules: {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, 5, 6,  false] }],
+      ['bold', 'italic', 'underline','strike'],
+      ['image', 'code-block'],
+      ['link'],
+      [{ 'script': 'sub'}, { 'script': 'super' }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['clean']
+    ]
+  },
+  placeholder: 'Compose an epic...',
+  theme: 'snow'  // or 'bubble'
+});
+
+        $("#submit").click(function(){
+          $("#hiddenArea").val($("#contenidoLibro .ql-editor").html());
+          tituloLibro=$("#tituloLibro").val();
+          autorLibro=$("#autorLibro").val();
+          contenidoLibro=$("#hiddenArea").val();
+          cantidad=$("#cantidad").val();
+          $.post('/publicar',{tituloLibro: tituloLibro, autorLibro: autorLibro, contenidoLibro: contenidoLibro, cantidad: cantidad}, function(data){
+          });
+        });
+      });
+
+</script>
+
+<div class="form-group">
+<h1>¡Publica y crea para siempre!</h1>
+<p>Titulo de tu libro:</p>
+<input id="tituloLibro" size="60" type="text" class="form-control" /><br>
+<p>Autor del libro:</p>
+<input id="autorLibro" size="60" type="text" class="form-control"/><br>
+<p>Contenido del libro:</p>
+
+<div id="contenidoLibro"></div>
+<textarea name="text" style="display:none" id="hiddenArea"></textarea><br>
+
+<p>Cantidad de ejemplares para publicar:</p>
+<input id="cantidad" size="10" type="number" class="form-control"/><br>
+<input id="submit" type="button" value="¡Publicar!" class="btn btn-primary" />
+</div>

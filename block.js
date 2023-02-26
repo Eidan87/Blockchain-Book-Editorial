@@ -1,4 +1,4 @@
-const SHA256 = require('crypto-js/sha256')
+const SHA256 = require('sha256')
 
 class Block {
     constructor(timestamp, transactions, tituloLibro, autorLibro, contenidoLibro, cantidad, hashPrevio=''){
@@ -13,9 +13,8 @@ class Block {
         this.hash = this.calcularHash()
     }
 
-
 calcularHash(){
-    return SHA256(this.timestamp + JSON.stringify(this.transactions) + JSON.stringify(this.tituloLibro) + JSON.stringify(this.autorLibro) + JSON.stringify(this.contenidoLibro) + this.hashPrevio + JSON.stringify(this.cantidad) + JSON.stringify(this.comodin)).toString()
+    return SHA256(this.timestamp + this.transactions + this.tituloLibro + this.autorLibro + JSON.stringify(this.contenidoLibro) + this.hashPrevio + this.cantidad + this.comodin).toString()
 }
 
 minarBloque(dificultad){
@@ -23,8 +22,7 @@ minarBloque(dificultad){
         this.comodin++
         this.hash = this.calcularHash()
     }  
-    console.log('Bloque de transacciones o publicación publicado!!!: ' + this.hash)
-    console.log('Dificultad minado: ' + dificultad)
+    //console.log('Bloque de transacciones o publicación publicado!!!: ' + this.hash)
 }
 
 }

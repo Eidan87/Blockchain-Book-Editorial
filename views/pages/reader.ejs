@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head'); %>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Bookchain es una editorial descentralizada de persona a persona o P2P">
+    <title>Lector de la Bookchain</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="container">
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="jumbotron">
+            <h1><%= JSON.stringify(tituloLibro) %></h1>
+              <br>
+              <h2><%= JSON.stringify(autorLibro) %></h2>
+              <br>
+              <%-  (contenidoLibro) %>
+        </div>
+    </div>
+
+    </div>
+
+</div>
+</main>
+
+<footer>
+    <%- include('../partials/footer'); %>
+</footer>
+
+</body>
+</html>
+
+

@@ -2,6 +2,7 @@ const Block = require('./block')
 const Transaction = require('./compradores.js')
 
 class BlockChain {
+
     constructor(){
         this.chain = [this.crearBloqueGenesis()]
         this.dificultad = 1
@@ -9,8 +10,8 @@ class BlockChain {
         this.miningReward = 1
     }
 
-    crearBloqueGenesis(){
-        return new Block(Date.now(), 'editorialConsenso', 'manifiestoEditorial', 'eDitorial', 'contenidoManifiesto, bla, bla, bla', 1000000, 0)
+    crearBloqueGenesis(){ 
+        return new Block(1676538545814, [new Transaction(null, 'eDitorial', 1, 'manifiestoEditorial')], 'manifiestoEditorial', 'eDitorial', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 1, 0)
     }
 
     getUltimoBloque(){
@@ -18,9 +19,11 @@ class BlockChain {
     }
 
     agregarBloque(nuevoBloque){
+        
         nuevoBloque.hashPrevio = this.getUltimoBloque().hash
         nuevoBloque.minarBloque(this.dificultad)
         //nuevoBloque.hash = nuevoBloque.calcularHash()
+        
         this.chain.push(nuevoBloque)
     }
 
@@ -29,7 +32,7 @@ class BlockChain {
     }
 
     minarTransaccionesPendientes(addressMinero) {
-        let block = new Block(Date.now(), this.pendingTransactions, this.tituloLibro)
+        let block = new Block(Date.now(), this.pendingTransactions)
         block.hashPrevio = this.getUltimoBloque().hash
         block.minarBloque(this.dificultad)
 
@@ -37,28 +40,50 @@ class BlockChain {
 
         this.chain.push(block)
 
-        this.pendingTransactions = [
+     this.pendingTransactions = [
             new Transaction(null, addressMinero, this.miningReward)
-        ]
+       ]
     }
 
     getBalanceOfAddress(address) {
-        let balance =  JSON.stringify(this.chain[0].tituloLibro)
-
+        let balance = [] 
         for(const block of this.chain){
             for(const trans of block.transactions){
                 if(trans.fromAddress === address) {
-                    balance -= JSON.stringify(trans.transacciontituloLibro)
+                    balance.push('------- VENTA -------', -trans.amount, trans.transacciontituloLibro, trans.toAddress, 'de', address,'--------------------','')
                 }
 
                 if(trans.toAddress === address){
-                    balance += JSON.stringify(trans.transacciontituloLibro)
-                }
-
-            }
+                    balance.push('++++++ COMPRA ++++++', +trans.amount, trans.transacciontituloLibro, trans.fromAddress, 'de', address,'--------------------','')
+                }     
+            }   
         }
 
         return balance
+        
+    }
+
+    numerocopias(address) {
+        let numeroEjemplares = 0
+        let ejemplarTransferido = '' 
+        for(const block of this.chain){
+            for(const trans of block.transactions){
+                if(trans.toAddress === address)
+               {
+                numeroEjemplares += trans.amount
+                ejemplarTransferido = 'Ejemplar/es transferidos: ' + trans.transacciontituloLibro + ': '+ trans.amount + 'Uds '
+                console.log(JSON.stringify(ejemplarTransferido)) 
+               }
+
+               if(trans.fromAddress === address){
+                numeroEjemplares -= trans.amount
+                ejemplarTransferido = trans.transacciontituloLibro  
+            }   
+        }
+    }
+
+        return numeroEjemplares
+        
     }
 
     validarChain(){
@@ -75,10 +100,6 @@ class BlockChain {
             }
 
             return true
-    
-    
-        
-    
         }
 }
 
@@ -92,14 +113,65 @@ class BlockChain {
             console.log(JSON.stringify(this.chain[i].autorLibro))
             console.log(JSON.stringify(this.chain[i].cantidad))
         }
-
-        else {
-            
-        }
-
         }
     }
 
-}
+    librosPublicados() {
+        let total1 =  0
+        for(let i = 0; i<this.chain.length; i++){
+     
+            if (this.chain[i].cantidad){
 
-module.exports = BlockChain
+           total1 += Number(this.chain[i].cantidad)
+    }}
+        return total1
+    }
+
+    librosTransferidos() {
+        let total2 =  0
+
+        for(const block of this.chain){
+            for(const trans of block.transactions){
+                if(trans.amount != undefined) {
+                    total2 += Number(trans.amount)
+                }
+            }}
+        return total2
+    }
+
+    librosVendidos() {
+        let totalVendidos = 0
+        let total3 =  0
+        let total4 =  0
+        
+            for(let i = 0; i<this.chain.length; i++){
+         
+                if (this.chain[i].cantidad){
+    
+               total3 += Number(this.chain[i].cantidad)
+               
+        }}
+
+            for(const block of this.chain){
+                for(const trans of block.transactions){
+                    if(trans.amount != undefined) {
+                        total4 += Number(trans.amount)
+                    }
+                }}
+                
+        totalVendidos =  total4 - total3
+
+        return totalVendidos
+    }
+
+    contarEslabones() {
+        let counterEslabones=0
+        for(let i = 0; i<this.chain.length; i++) {
+            counterEslabones++
+        }
+    return counterEslabones
+    }
+
+    }
+
+module.exports = BlockChain;
