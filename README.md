@@ -1,4 +1,4 @@
-Welcome to BookChain!
+<h1>Welcome to BookChain!</h1>
 
 At BookChain, we believe that information is a fundamental human right and that knowledge should be shared with everyone. Our goal is to create a decentralized platform that allows anyone to safely publish, buy, and sell books without unnecessary intermediaries.
 
@@ -13,7 +13,11 @@ Join us on this mission to build a more just and equitable future for all, a fut
 For initialize with node.js need to write in terminal the following command: 
 node index.js
 
-Explanation:
+![8eb43910-2a78-47cd-abd3-a454843355a8](https://user-images.githubusercontent.com/42222419/221434229-52a87d1d-7ecd-47ba-8a95-e7fa798a87d9.jpeg)
+
+![f808c0b7-6a84-470c-aa60-4e67416f5782](https://user-images.githubusercontent.com/42222419/221434231-3083fcca-235d-4a3b-b35a-8ae367645b47.jpeg)
+
+<h2>Explanation:</h2>
 
 This is a blockchain implementation in Node.js that includes a Block class, a Transaction class, and a Blockchain class.
 
@@ -41,6 +45,3 @@ The recorrerChain method logs the titles, authors, and quantities of all the boo
 
 The librosPublicados method returns an object that summarizes the number of copies of each book published in the blockchain.
 
-![8eb43910-2a78-47cd-abd3-a454843355a8](https://user-images.githubusercontent.com/42222419/221434229-52a87d1d-7ecd-47ba-8a95-e7fa798a87d9.jpeg)
-
-![f808c0b7-6a84-470c-aa60-4e67416f5782](https://user-images.githubusercontent.com/42222419/221434231-3083fcca-235d-4a3b-b35a-8ae367645b47.jpeg)
