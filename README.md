@@ -2,49 +2,49 @@
 
 La "Bookchain" se propone revolucionar la industria editorial mediante el aprovechamiento de la tecnología blockchain para mejorar la autenticidad, propiedad y gestión de los libros. Aquí hay algunas mejoras sugeridas:
 
-Interfaz de Usuario Mejorada:
+<b>Interfaz de Usuario Mejorada:</b>
 Diseña una interfaz de usuario intuitiva que sea accesible tanto para autores como para lectores. Facilita el proceso de registro de obras para autores y proporciona a los lectores una experiencia fluida al explorar la información almacenada en la cadena de bloques.
 
-Formato Estandarizado de Registro:
+<b>Formato Estandarizado de Registro:</b>
 Establece un formato estandarizado para las entradas de libros en la cadena de bloques. Esto garantizará consistencia y facilitará la interoperabilidad con otras plataformas y sistemas.
 
-Verificación de Autenticidad Mejorada:
+<b>Verificación de Autenticidad Mejorada:</b>
 Implementa herramientas avanzadas de verificación de autenticidad, como códigos QR en los libros impresos que conduzcan a la entrada correspondiente en la cadena de bloques. Esto proporcionará una forma rápida y segura de confirmar la autenticidad de un libro.
 
-Contratos Inteligentes Mejorados:
+<b>Contratos Inteligentes Mejorados:</b>
 Explora la posibilidad de utilizar contratos inteligentes más avanzados para transacciones complejas, como la gestión automatizada de regalías para autores basada en las ventas. Esto mejoraría la eficiencia y transparencia en la distribución de ingresos.
 
-Colaboración con Plataformas de Distribución:
+<b>Colaboración con Plataformas de Distribución:</b>
 Colabora con plataformas de distribución de libros electrónicos para integrar la "Bookchain". Esto permitirá un seguimiento más preciso de las ventas digitales y una gestión eficiente de los derechos de autor en entornos digitales.
 
-Registro de Ediciones Especiales:
+<b>Registro de Ediciones Especiales:</b>
 Extiende la funcionalidad para permitir el registro de ediciones especiales y firmadas. Esto podría añadir un valor adicional al historial de propiedad y autenticidad de los libros.
 
-Funcionalidad de Notificaciones:
+<b>Funcionalidad de Notificaciones:</b>
 Implementa un sistema de notificaciones para informar a los propietarios sobre cualquier cambio en el estado de sus libros, como transferencias de propiedad, nuevas reseñas, o actualizaciones en los derechos de autor.
 
-Registro de Eventos Literarios:
+<b>Registro de Eventos Literarios:</b>
 Considera la posibilidad de registrar eventos literarios relevantes en la cadena de bloques. Esto podría incluir lanzamientos de libros, ferias del libro, o encuentros de autores, proporcionando un historial completo de la vida de un libro.
 
-Integración con Sistemas de Bibliotecas:
+<b>Integración con Sistemas de Bibliotecas:</b>
 Facilita la integración de la "Bookchain" con sistemas de bibliotecas, permitiendo un seguimiento eficiente de los libros en sus inventarios y mejorando la gestión de préstamos y devoluciones.
 
-Programas de Recompensas para Reseñas:
+<b>Programas de Recompensas para Reseñas:</b>
 Incentiva la participación de los lectores mediante programas de recompensas basados en tokens o descuentos para aquellos que contribuyan con reseñas y calificaciones, fomentando así una base de datos más completa y confiable.
 
-Transparencia en la Gestión de Derechos:
+<b>Transparencia en la Gestión de Derechos:</b>
 Asegúrate de que la cadena de bloques ofrezca total transparencia en la gestión de derechos de autor, permitiendo a los autores rastrear y gestionar eficientemente sus derechos a lo largo del tiempo.
 
-Integración con Redes Sociales:
+<b>Integración con Redes Sociales:</b>
 Permite a los usuarios compartir fácilmente información sobre los libros en redes sociales, ampliando así la visibilidad y el alcance de la "Bookchain".
 
-Auditorías de Seguridad Periódicas:
+<b>Auditorías de Seguridad Periódicas:</b>
 Realiza auditorías de seguridad regulares para garantizar la integridad y resistencia de la "Bookchain" frente a posibles amenazas cibernéticas.
 
-Campañas de Promoción:
+<b>Campañas de Promoción:</b>
 Desarrolla campañas de promoción para educar a la comunidad sobre los beneficios de la "Bookchain" y cómo puede transformar positivamente la industria editorial. Esto puede incluir webinars, tutoriales en video y material educativo.
 
-Al implementar estas mejoras, la "Bookchain" no solo garantizará la autenticidad y propiedad de los libros, sino que también se convertirá en una plataforma integral que mejora la experiencia para autores, lectores y todos los actores involucrados en la cadena editorial.
+<b>Al implementar estas mejoras, la "Bookchain" no solo garantizará la autenticidad y propiedad de los libros, sino que también se convertirá en una plataforma integral que mejora la experiencia para autores, lectores y todos los actores involucrados en la cadena editorial.
 
 For initialize with node.js need to write in terminal the following command: 
 node index.js
