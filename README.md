@@ -44,7 +44,7 @@ Realiza auditorías de seguridad regulares para garantizar la integridad y resis
 <b>Campañas de Promoción:</b>
 Desarrolla campañas de promoción para educar a la comunidad sobre los beneficios de la "Bookchain" y cómo puede transformar positivamente la industria editorial. Esto puede incluir webinars, tutoriales en video y material educativo.
 
-<b>Al implementar estas mejoras, la "Bookchain" no solo garantizará la autenticidad y propiedad de los libros, sino que también se convertirá en una plataforma integral que mejora la experiencia para autores, lectores y todos los actores involucrados en la cadena editorial.
+Al implementar estas mejoras, la "Bookchain" no solo garantizará la autenticidad y propiedad de los libros, sino que también se convertirá en una plataforma integral que mejora la experiencia para autores, lectores y todos los actores involucrados en la cadena editorial.
 
 For initialize with node.js need to write in terminal the following command: 
 node index.js
