@@ -1,4 +1,4 @@
-//index2.js
+//index2.js it's very hot
 
 const SHA256 = require('sha256');
 
