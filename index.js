@@ -15,7 +15,10 @@ const peers = process.env.PEERS ? process.env.PEERS.split(',') : [];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use("/", express.static('public'));
+app.use(express.static('public'));
+
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
 
 let cutreCoin = new BlockChain();
 
@@ -104,6 +107,13 @@ app.listen(HTTP_PORT, () => {
     connectToPeers(peers);
 });
 
+// Define root route
+app.get('/', (req, res) => {
+    res.render('index', {
+        cutreCoin: cutreCoin
+    });
+});
+
 // Endpoint to view the blockchain
 app.get('/blocks', (req, res) => {
     res.send(cutreCoin.chain);
@@ -133,11 +143,6 @@ app.get('/peers', (req, res) => {
 app.post('/addPeer', (req, res) => {
     connectToPeers([req.body.peer]);
     res.send('Peer added');
-});
-
-// Define root route
-app.get('/', (req, res) => {
-    res.send('Welcome to CutreCoin Blockchain!');
 });
 
 // votar delegado
