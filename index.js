@@ -1,24 +1,21 @@
-var express = require('express');
-var app = express();
-
-var bodyParser = require("body-parser");
-var router = express.Router();
-
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb' }));
+const express = require('express');
+const bodyParser = require('body-parser');
+const fs = require('fs');
+const WebSocket = require('ws');
 
 const Block = require('./block.js');
 const Transaction = require('./compradores.js');
 const BlockChain = require('./blockchain.js');
 const Delegado = require('./delegado.js');
 
+const app = express();
+const HTTP_PORT = 3001;
+const P2P_PORT = 6001;
+const peers = process.env.PEERS ? process.env.PEERS.split(',') : [];
+
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use("/", router);
-
-app.use(express.static('public'));
-
-var fs = require('fs');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use("/", express.static('public'));
 
 let cutreCoin = new BlockChain();
 
@@ -35,90 +32,109 @@ if (fs.existsSync('./test.json')) {
     });
 }
 
-app.set('view engine', 'ejs');
+const server = new WebSocket.Server({ port: P2P_PORT });
 
-// index page
-app.get('/', function (req, res) {
-    res.render('pages/index', {
-        'cutreCoin': cutreCoin,
-        'tituloLibro': cutreCoin.chain.tituloLibro,
-        'autorLibro': cutreCoin.chain.autorLibro,
-        'contenidoLibro': cutreCoin.chain.contenidoLibro,
-        'cantidad': cutreCoin.chain.cantidad,
-        'timestamp': cutreCoin.chain.timestamp
+let sockets = [];
+
+server.on('connection', (ws) => {
+    sockets.push(ws);
+    ws.on('message', (message) => {
+        let data = JSON.parse(message);
+        switch (data.type) {
+            case 'CHAIN':
+                handleBlockchainResponse(data);
+                break;
+            case 'TRANSACTION':
+                handleTransaction(data.transaction);
+                break;
+            case 'BLOCK':
+                handleBlock(data.block);
+                break;
+        }
     });
 });
 
-//leer libro
-router.get('/reader/:i', function (req, res) {
-    i = Number(req.params.i);
-    res.render('pages/reader', {
-        'tituloLibro': cutreCoin.chain[i].tituloLibro,
-        'autorLibro': cutreCoin.chain[i].autorLibro,
-        'contenidoLibro': cutreCoin.chain[i].contenidoLibro
+const connectToPeers = (newPeers) => {
+    newPeers.forEach((peer) => {
+        const ws = new WebSocket(peer);
+        ws.on('open', () => {
+            sockets.push(ws);
+            console.log(`Connected to peer: ${peer}`);
+        });
+        ws.on('message', (message) => {
+            let data = JSON.parse(message);
+            switch (data.type) {
+                case 'CHAIN':
+                    handleBlockchainResponse(data);
+                    break;
+                case 'TRANSACTION':
+                    handleTransaction(data.transaction);
+                    break;
+                case 'BLOCK':
+                    handleBlock(data.block);
+                    break;
+            }
+        });
     });
+};
+
+const broadcast = (message) => {
+    sockets.forEach((socket) => socket.send(JSON.stringify(message)));
+};
+
+const handleBlockchainResponse = (data) => {
+    let newChain = data.chain;
+    if (newChain.length > cutreCoin.chain.length && cutreCoin.validarChain(newChain)) {
+        cutreCoin.chain = newChain;
+        console.log('Replaced chain with the new chain from peer');
+    }
+};
+
+const handleTransaction = (transaction) => {
+    cutreCoin.agregarTransaction(transaction);
+};
+
+const handleBlock = (block) => {
+    cutreCoin.agregarBloque(block);
+};
+
+// Start HTTP server
+app.listen(HTTP_PORT, () => {
+    console.log(`Listening on port: ${HTTP_PORT}`);
+    connectToPeers(peers);
 });
 
-// publicar libro
-app.get('/publicar-libro', function (req, res) {
-    res.render('pages/publicar-libro', {});
+// Endpoint to view the blockchain
+app.get('/blocks', (req, res) => {
+    res.send(cutreCoin.chain);
 });
 
-router.get('/pages/publicar-libro', (req, res) => {
-    res.sendFile(__dirname + '/pages/publicar-libro');
-    console.log("Index renderizado");
+// Endpoint to add a new block
+app.post('/mineBlock', (req, res) => {
+    const newBlock = cutreCoin.minarTransaccionesPendientes(req.body.addressMinero);
+    broadcast({ type: 'BLOCK', block: newBlock });
+    res.send(newBlock);
 });
 
-app.post('/', function (req, res) {
-    res.send('welcome, ' + req.body.autorLibro);
+// Endpoint to add a new transaction
+app.post('/addTransaction', (req, res) => {
+    const newTransaction = new Transaction(req.body.fromAddress, req.body.toAddress, req.body.amount, req.body.transacciontituloLibro);
+    cutreCoin.agregarTransaction(newTransaction);
+    broadcast({ type: 'TRANSACTION', transaction: newTransaction });
+    res.send('Transaction added');
 });
 
-router.post('/publicar', function (req, res) {
-    cutreCoin.agregarBloque(new Block(Date.now(), [new Transaction(null, req.body.autorLibro, Number(req.body.cantidad), req.body.tituloLibro)], req.body.tituloLibro, req.body.autorLibro, req.body.contenidoLibro, Number(req.body.cantidad)));
-    fs.writeFile('./test.json', JSON.stringify(cutreCoin), 'utf-8', function (err) {
-        if (err) console.log(err);
-        console.log("Libro publicado. Gracias.");
-    });
+// Endpoint to view the list of peers
+app.get('/peers', (req, res) => {
+    res.send(sockets.map(s => s._socket.remoteAddress));
 });
 
-// about page
-app.get('/about', function (req, res) {
-    res.render('pages/about');
-});
-
-//transaccion
-app.get('/transacciones', function (req, res) {
-    res.render('pages/transacciones', {});
-});
-
-router.post('/transaccion', function (req, res) {
-    cutreCoin.agregarTransaction(new Transaction(req.body.poseedorLibro, req.body.compradorLibro, req.body.cantidad, req.body.tituloLibro));
-    cutreCoin.minarTransaccionesPendientes('eDitorial');
-});
-
-// votar delegado
-app.post('/votar', function (req, res) {
-    cutreCoin.votarPorDelegado(req.body.address);
-    res.send(`Voto registrado para ${req.body.address}`);
-});
-
-// admin
-app.get('/admin/', function (req, res) {
-    res.render('pages/admin', {
-        cutreCoin: cutreCoin,
-        tituloLibro: cutreCoin.chain.tituloLibro,
-        autorLibro: cutreCoin.chain.autorLibro,
-        contenidoLibro: cutreCoin.chain.hash,
-        cantidad: cutreCoin.chain.cantidad,
-        timestamp: cutreCoin.chain.timestamp,
-        validarChain: cutreCoin.validarChain(),
-        librosPublicados: cutreCoin.librosPublicados(),
-        titulosPublicados: cutreCoin.contarEslabones(),
-        librosVendidos: cutreCoin.librosVendidos()
-    });
+// Endpoint to connect to a new peer
+app.post('/addPeer', (req, res) => {
+    connectToPeers([req.body.peer]);
+    res.send('Peer added');
 });
 
 module.exports = { Block, BlockChain, Transaction, Delegado, cutreCoin };
 
-app.listen(8080);
-console.log('8080 is the magic port');
+console.log('P2P server running on port: ' + P2P_PORT);
