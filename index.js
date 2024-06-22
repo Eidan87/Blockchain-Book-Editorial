@@ -135,6 +135,33 @@ app.post('/addPeer', (req, res) => {
     res.send('Peer added');
 });
 
+// Define root route
+app.get('/', (req, res) => {
+    res.send('Welcome to CutreCoin Blockchain!');
+});
+
+// votar delegado
+app.post('/votar', function (req, res) {
+    cutreCoin.votarPorDelegado(req.body.address);
+    res.send(`Voto registrado para ${req.body.address}`);
+});
+
+// admin
+app.get('/admin/', function (req, res) {
+    res.render('pages/admin', {
+        cutreCoin: cutreCoin,
+        tituloLibro: cutreCoin.chain.tituloLibro,
+        autorLibro: cutreCoin.chain.autorLibro,
+        contenidoLibro: cutreCoin.chain.hash,
+        cantidad: cutreCoin.chain.cantidad,
+        timestamp: cutreCoin.chain.timestamp,
+        validarChain: cutreCoin.validarChain(),
+        librosPublicados: cutreCoin.librosPublicados(),
+        titulosPublicados: cutreCoin.contarEslabones(),
+        librosVendidos: cutreCoin.librosVendidos()
+    });
+});
+
 module.exports = { Block, BlockChain, Transaction, Delegado, cutreCoin };
 
 console.log('P2P server running on port: ' + P2P_PORT);
