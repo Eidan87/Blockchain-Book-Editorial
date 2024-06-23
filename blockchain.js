@@ -1,6 +1,8 @@
+//blockchain.js
+const fs = require('fs');
 const Block = require('./block');
-const Transaction = require('./compradores.js');
-const Delegado = require('./delegado'); // Importar la clase Delegado
+const Transaction = require('./transaction');
+const Delegado = require('./delegado');
 
 class BlockChain {
     constructor() {
@@ -8,12 +10,16 @@ class BlockChain {
         this.dificultad = 1;
         this.pendingTransactions = [];
         this.miningReward = 1;
-        this.delegados = []; // Lista de delegados
-        this.maxDelegados = 21; // Número máximo de delegados
+        this.delegados = [];
+        this.maxDelegados = 21;
     }
 
     crearBloqueGenesis() {
-        return new Block(1676538545814, [new Transaction(null, 'eDitorial', 1, 'manifiestoEditorial')], 'manifiestoEditorial', 'eDitorial', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 1, 0);
+        return new Block(
+            0, Date.now(), [new Transaction(null, 'eDitorial', "1", 'manifiestoEditorial')], 
+            'manifiestoEditorial', 'eDitorial', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.', 
+            1, '0', '', "uploads/imagenManifiesto.jpg"
+        );
     }
 
     getUltimoBloque() {
@@ -21,9 +27,15 @@ class BlockChain {
     }
 
     agregarBloque(nuevoBloque) {
+        if (this.libroExiste(nuevoBloque.tituloLibro, nuevoBloque.autorLibro)) {
+            console.log('El libro ya ha sido publicado.');
+            return false;
+        }
         nuevoBloque.hashPrevio = this.getUltimoBloque().hash;
         nuevoBloque.minarBloque(this.dificultad);
         this.chain.push(nuevoBloque);
+        this.saveChain(); // Guardar la cadena de bloques después de añadir un nuevo bloque
+        return true;
     }
 
     agregarTransaction(transaction) {
@@ -31,21 +43,24 @@ class BlockChain {
     }
 
     minarTransaccionesPendientes(addressMinero) {
-        if (!this.esDelegado(addressMinero)) {
+        const delegado = this.delegados.find(d => d.address === addressMinero);
+        if (!delegado) {
             console.log('Solo los delegados pueden minar bloques.');
-            return;
+            return null;
         }
-        let block = new Block(Date.now(), this.pendingTransactions);
-        block.hashPrevio = this.getUltimoBloque().hash;
+
+        const block = new Block(Date.now(), this.pendingTransactions, '', '', '', 0, this.getUltimoBloque().hash, delegado.address);
         block.minarBloque(this.dificultad);
 
         console.log('Se ha publicado correctamente el bloque de transacciones.');
-
         this.chain.push(block);
 
         this.pendingTransactions = [
             new Transaction(null, addressMinero, this.miningReward)
         ];
+
+        this.saveChain();
+        return block;
     }
 
     esDelegado(address) {
@@ -69,6 +84,7 @@ class BlockChain {
 
     getBalanceOfAddress(address) {
         let balance = [];
+
         for (const block of this.chain) {
             for (const trans of block.transactions) {
                 if (trans.fromAddress === address) {
@@ -86,18 +102,15 @@ class BlockChain {
 
     numerocopias(address) {
         let numeroEjemplares = 0;
-        let ejemplarTransferido = '';
         for (const block of this.chain) {
             for (const trans of block.transactions) {
                 if (trans.toAddress === address) {
                     numeroEjemplares += trans.amount;
-                    ejemplarTransferido = 'Ejemplar/es transferidos: ' + trans.transacciontituloLibro + ': ' + trans.amount + 'Uds ';
-                    console.log(JSON.stringify(ejemplarTransferido));
+                    console.log('Ejemplar/es transferidos:', trans.transacciontituloLibro, trans.amount, 'Uds');
                 }
 
                 if (trans.fromAddress === address) {
                     numeroEjemplares -= trans.amount;
-                    ejemplarTransferido = trans.transacciontituloLibro;
                 }
             }
         }
@@ -110,82 +123,57 @@ class BlockChain {
             const bloqueActual = this.chain[i];
             const bloqueAnterior = this.chain[i - 1];
 
-            if (bloqueActual.hash != bloqueActual.calcularHash()) {
+            if (bloqueActual.hash !== bloqueActual.calcularHash() || bloqueActual.hashPrevio !== bloqueAnterior.hash) {
                 return false;
             }
-
-            if (bloqueActual.hashPrevio != bloqueAnterior.hash) {
-                return false;
-            }
-
-            return true;
         }
+        return true;
     }
 
     recorrerChain() {
-        for (let i = 0; i < this.chain.length; i++) {
-            if (this.chain[i].tituloLibro && this.chain[i].autorLibro && this.chain[i].cantidad) {
+        for (const block of this.chain) {
+            if (block.tituloLibro && block.autorLibro && block.cantidad) {
                 console.log("Titulo, autor y ejemplares publicados en este bloque:");
-                console.log(JSON.stringify(this.chain[i].tituloLibro));
-                console.log(JSON.stringify(this.chain[i].autorLibro));
-                console.log(JSON.stringify(this.chain[i].cantidad));
+                console.log(block.tituloLibro);
+                console.log(block.autorLibro);
+                console.log(block.cantidad);
             }
         }
     }
 
     librosPublicados() {
-        let total1 = 0;
-        for (let i = 0; i < this.chain.length; i++) {
-            if (this.chain[i].cantidad) {
-                total1 += Number(this.chain[i].cantidad);
-            }
-        }
-        return total1;
+        return this.chain.reduce((total, block) => total + (Number(block.cantidad) || 0), 0);
     }
 
     librosTransferidos() {
-        let total2 = 0;
-
-        for (const block of this.chain) {
-            for (const trans of block.transactions) {
-                if (trans.amount != undefined) {
-                    total2 += Number(trans.amount);
-                }
-            }
-        }
-        return total2;
+        return this.chain.reduce((total, block) => total + block.transactions.reduce((sum, trans) => sum + (Number(trans.amount) || 0), 0), 0);
     }
 
     librosVendidos() {
-        let totalVendidos = 0;
-        let total3 = 0;
-        let total4 = 0;
-
-        for (let i = 0; i < this.chain.length; i++) {
-            if (this.chain[i].cantidad) {
-                total3 += Number(this.chain[i].cantidad);
-            }
-        }
-
-        for (const block of this.chain) {
-            for (const trans of block.transactions) {
-                if (trans.amount != undefined) {
-                    total4 += Number(trans.amount);
-                }
-            }
-        }
-
-        totalVendidos = total4 - total3;
-
-        return totalVendidos;
+        const transferidos = this.librosTransferidos();
+        return transferidos;
     }
 
     contarEslabones() {
-        let counterEslabones = 0;
-        for (let i = 0; i < this.chain.length; i++) {
-            counterEslabones++;
-        }
-        return counterEslabones;
+        return this.chain.length;
+    }
+
+    libroExiste(tituloLibro, autorLibro) {
+        return this.chain.some(block => block.tituloLibro === tituloLibro && block.autorLibro === autorLibro);
+    }
+
+    // Método para guardar cada bloque como archivo JSON
+    saveChain() {
+        this.chain.forEach(block => {
+            const filename = `./uploads/block_${block.index}.json`;
+            fs.writeFile(filename, JSON.stringify(block), (err) => {
+                if (err) {
+                    console.error(`Error saving block ${block.index}: `, err);
+                } else {
+                    console.log(`Block ${block.index} saved successfully.`);
+                }
+            });
+        });
     }
 }
 
