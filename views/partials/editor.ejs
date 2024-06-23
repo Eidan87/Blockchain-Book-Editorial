@@ -1,0 +1,13 @@
+<script>
+
+var makeEditable = require('make-editable')
+
+var editable = makeEditable(document)
+
+editable.selectAll()
+editable.bold()
+editable.link('http://foobar.com')
+editable.img('http://foo.com/bar.jpg')
+editable.exec(command, value, showDefaultUI)
+
+</script>

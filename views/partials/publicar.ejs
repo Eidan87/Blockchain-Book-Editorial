@@ -1,0 +1,74 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet">
+<script src="//cdn.quilljs.com/1.0.0/quill.min.js"></script>
+
+<script>
+$(document).ready(function(){
+
+    // Initialize Quill editor
+    var quill = new Quill('#contenidoLibro', {
+        modules: {
+            toolbar: [
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                ['image', 'code-block'],
+                ['link'],
+                [{ 'script': 'sub'}, { 'script': 'super' }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['clean']
+            ]
+        },
+        placeholder: 'Compose an epic...',
+        theme: 'snow'
+    });
+
+    // Handle form submission
+    $("#submit").click(function(){
+        // Set hidden textarea value to Quill editor's HTML content
+        $("#hiddenArea").val($("#contenidoLibro .ql-editor").html());
+        // Gather form data
+        var formData = new FormData();
+        formData.append('tituloLibro', $("#tituloLibro").val());
+        formData.append('autorLibro', $("#autorLibro").val());
+        formData.append('contenidoLibro', $("#hiddenArea").val());
+        formData.append('cantidad', $("#cantidad").val());
+        formData.append('image', $("#image")[0].files[0]); // Append uploaded image file
+
+        // Send POST request with form data to /publicar-libro endpoint
+        $.ajax({
+            url: '/publicar-libro',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data){
+                // Handle success response if needed
+                console.log('Libro publicado correctamente:', data);
+            },
+            error: function(err){
+                // Handle error response if needed
+                console.error('Error al publicar el libro:', err);
+            }
+        });
+    });
+});
+</script>
+
+<div class="form-group">
+    <h1>¡Publica y crea para siempre!</h1>
+    <form action="/publicar-libro" method="post" enctype="multipart/form-data">
+        <p>Titulo de tu libro:</p>
+        <input id="tituloLibro" size="60" type="text" class="form-control" name="tituloLibro" required/><br>
+        <p>Autor del libro:</p>
+        <input id="autorLibro" size="60" type="text" class="form-control" name="autorLibro" required/><br>
+        <p>Contenido del libro:</p>
+        <div id="contenidoLibro"></div>
+        <textarea name="contenidoLibro" style="display:none" id="hiddenArea" required></textarea><br>
+        <p>Cantidad de ejemplares para publicar:</p>
+        <input id="cantidad" size="10" type="number" class="form-control" name="cantidad" required/><br>
+        <p>Selecciona una imagen de portada:</p>
+        <input type="file" name="image" id="image" class="form-control-file" accept="image/jpeg, image/png, image/gif" required/><br>
+        <input type="hidden" name="imageUrl" id="imageUrl"> <!-- Hidden field for imageUrl -->
+        <button id="submit" type="button" class="btn btn-primary">¡Publicar!</button>
+    </form>
+</div>

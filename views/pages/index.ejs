@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../partials/head'); %>
+    <style>
+        .card {
+            position: relative;
+            overflow: hidden;
+        }
+        .card-img-top {
+            display: block;
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .card-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            margin: 0;
+            font-size: 1.5rem;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body class="container">
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+
+  <div class="album py-5 bg-light">
+    <div class="container">
+        <div class=" ">
+        <h1>Lista de libros</h1>
+        <p>Bienvenido a la Bookchain</p>
+      </div>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        
+        <% for(var i=0; i < cutreCoin.chain.length; i++) { %>  
+          <div class="col">
+              <div class="card shadow-sm">
+                  <!-- Mostrar la imagen de portada del libro si está disponible -->
+                  <% if (cutreCoin.chain[i].imageUrl) { %>
+
+                      <img src="<%= cutreCoin.chain[i].imageUrl %>" class="card-img-top" alt="Portada del libro">
+                      <h2 class="card-title"><%= cutreCoin.chain[i].tituloLibro %></h2> <!-- Título del libro encima de la imagen -->
+                      
+                  <% } else { %>
+                      <!-- Placeholder si no hay imagen -->
+                      <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                          <title>Placeholder</title>
+                          <rect width="100%" height="100%" fill="#55595c"/>
+                          <text x="20%" y="50%" fill="#eceeef" dy=".3em"><%= cutreCoin.chain[i].tituloLibro %></text>
+                      </svg>
+                      <h2 class="card-title"><%= cutreCoin.chain[i].tituloLibro %></h2> <!-- Título del libro encima del placeholder -->
+                  <% } %>
+          
+              <div class="card-body">
+                <p>Autor: <%= cutreCoin.chain[i].autorLibro %></p>
+                <!-- Aquí puedes mostrar un extracto del contenido o información adicional -->
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <a href="/reader/<%= i %>"> <button type="button" class="btn btn-sm btn-outline-secondary">Leer</button></a>
+                    <a href="#"><button type="button" class="btn btn-sm btn-outline-secondary">Comprar</button></a>
+                  </div>
+                  <small class="text-muted">Ejemplares: <%= cutreCoin.chain[i].cantidad %></small>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+
+        <% } %>
+
+    </div>
+</div>
+</div>
+
+</main>
+
+<footer>
+    <%- include('../partials/footer'); %>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Administrador</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+</head>
+<body>
+    <header class="px-4">
+            <%- include('../partials/header'); %>
+        </header>
+        
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Dashboard</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Panel de control</li>
+        </ol>
+
+        <!-- Cards de información -->
+        <div class="row">
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-primary text-white mb-4">
+                    <div class="card-body">Ejemplares Publicados</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="#"><%= librosPublicados %></a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-warning text-white mb-4">
+                    <div class="card-body">Titulos Publicados</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="#"><%= titulosPublicados %></a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-success text-white mb-4">
+                    <div class="card-body">Libros Vendidos</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="#"><%= librosVendidos %></a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-danger text-white mb-4">
+                    <div class="card-body">Integridad de la cadena</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="#"><%= validarChain ? 'True' : 'False' %></a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar me-1"></i>
+                        Ejemplares por Bloque
+                    </div>
+                    <div class="card-body">
+                        <canvas id="ejemplaresPorBloqueChart" style="max-width: 100%; max-height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabla de cadena de bloques -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                DataTable Example
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Autor del Libro</th>
+                            <th>Título del Libro</th>
+                            <th>Cantidad</th>
+                            <th>Hash</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% cutreCoin.chain.forEach(block => { %>
+                            <tr>
+                                <td><%= block.autorLibro %></td>
+                                <td><%= block.tituloLibro %></td>
+                                <td><%= block.cantidad %></td>
+                                <td><%= block.hash %></td>
+                                <td><%= new Date(block.timestamp).toLocaleString() %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Lista de Peers -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-users me-1"></i>
+                Lista de Peers Conectados
+            </div>
+            <div class="card-body">
+                <ul>
+                    <% peers.forEach(peer => { %>
+                        <li><%= peer %></li>
+                    <% }); %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="py-4 bg-light mt-auto">
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center justify-content-between small">
+            <div class="text-muted">Copyright &copy; BookChain 2024</div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ejemplaresPorBloqueData = <%= JSON.stringify(ejemplaresPorBloqueData) %>; 
+
+        var ctx = document.getElementById('ejemplaresPorBloqueChart').getContext('2d');
+        var ejemplaresPorBloqueChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ejemplaresPorBloqueData.map((_, index) => `Bloque ${index + 1}`),
+                datasets: [{
+                    label: 'Ejemplares por Bloque',
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    data: ejemplaresPorBloqueData,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            autoSkip: true,
+                            maxRotation: 0
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Cantidad'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-THa3TiztDvvhSD33oDR5Dw1tNQsg/JTADo3d9AO5rFlLj/hm+0tIehruOTWiV8zA" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-Xmw94d8AIZ7vPhBzAAkVjP2ONLGNhIyV6o2lQ7bOBYTt5fs2GQJD0npoTl0L7VJ9" crossorigin="anonymous"></script>
+
+</body>
+</html>

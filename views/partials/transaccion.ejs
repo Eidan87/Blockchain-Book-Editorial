@@ -1,0 +1,28 @@
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">  </script>
+
+<script>   
+$(document).ready(function(){
+$("#submit").click(function(){
+  tituloLibro=$("#tituloLibro").val();
+  compradorLibro=$("#compradorLibro").val();
+  poseedorLibro=$("#poseedorLibro").val();
+  cantidad=$("#cantidad").val();
+  $.post('/transaction', {tituloLibro: tituloLibro, poseedorLibro: poseedorLibro, compradorLibro: compradorLibro, cantidad: cantidad}, function(data){
+  });
+});
+});
+</script>
+
+<div class="form-group">
+<h1>¡Compra tu libro!</h1>
+<p>Titulo de tu libro:</p>
+<input id="tituloLibro" size="60" type="text" class="form-control" /><br>
+<p>Autor del libro:</p>
+<input id="poseedorLibro" size="60" type="text" class="form-control"/><br>
+<p>Comprador del Libro:</p>
+<input id="compradorLibro" size="60" type="text" class="form-control"/><br>
+<p>Cantidad de ejemplares para comprar:</p>
+<input id="cantidad" size="10" type="number" class="form-control"/><br>
+<input id="submit" type="button" value="¡Comprar!" class="btn btn-primary" />
+</div>
