@@ -1,5 +1,11 @@
 <h1>Welcome / Bienvenidxs </h1>
 
+![1](https://github.com/Eidan87/Blockchain-Book-Editorial/assets/42222419/eadcd37b-96b0-4700-bf06-ea441752da09)
+![2](https://github.com/Eidan87/Blockchain-Book-Editorial/assets/42222419/fd329d77-0cf9-4435-a4ee-49763bec52cc)
+![5](https://github.com/Eidan87/Blockchain-Book-Editorial/assets/42222419/dc77af51-eab4-458d-8a6b-67553c268bf0)
+![4](https://github.com/Eidan87/Blockchain-Book-Editorial/assets/42222419/1b46f261-4f8c-402c-bbd0-84404f72a715)
+![3](https://github.com/Eidan87/Blockchain-Book-Editorial/assets/42222419/9ac7102b-e330-41f4-9fb5-3d59edafd5bb)
+
 La "Bookchain" se propone revolucionar la industria editorial mediante el aprovechamiento de la tecnología blockchain para mejorar la autenticidad, propiedad y gestión de los libros. Aquí hay algunas mejoras sugeridas:
 
 <b>Interfaz de Usuario Mejorada:</b>
@@ -64,10 +70,6 @@ Al implementar estas mejoras, la "Bookchain" no solo garantizará la autenticida
 
 For initialize with node.js need to write in terminal the following command: 
 node index.js
-
-![8eb43910-2a78-47cd-abd3-a454843355a8](https://user-images.githubusercontent.com/42222419/221434229-52a87d1d-7ecd-47ba-8a95-e7fa798a87d9.jpeg)
-
-![f808c0b7-6a84-470c-aa60-4e67416f5782](https://user-images.githubusercontent.com/42222419/221434231-3083fcca-235d-4a3b-b35a-8ae367645b47.jpeg)
 
 <h2>Explanation:</h2>
 
